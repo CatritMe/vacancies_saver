@@ -1,16 +1,19 @@
-# This is a sample Python script.
+import json
+import os
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from config import config
+from utils import get_hh_data, create_database, save_data_to_database
 
 
-# Press the green button in the gutter to run the script.
+
+def main():
+    params = config()
+    employers = json.load(open(os.path.abspath("employers.json"), 'r', encoding='utf=8'))
+
+    data = get_hh_data(employers)
+    create_database('hh_vacancies', params)
+    save_data_to_database(employers, data, 'hh_vacancies', params)
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()

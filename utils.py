@@ -43,8 +43,9 @@ def create_database(database_name: str, params: dict):
                 employer_id int REFERENCES employers(employer_id),
                 title varchar NOT NULL,
                 city varchar,
-                salary_from int,
-                salary_to int,
+                salary_from int DEFAULT NULL,
+                salary_to int DEFAULT NULL,
+                url text,
                 requirement text
             )
         """)
@@ -67,17 +68,17 @@ def save_data_to_database(employers, data: list[dict[str, Any]], database_name: 
             try:
                 salary_from = int(vac['salary']['from'])
             except TypeError:
-                salary_from = 0
+                salary_from = None
 
             try:
                 salary_to = int(vac['salary']['to'])
             except TypeError:
-                salary_to = 0
+                salary_to = None
             cur.execute("""
-            INSERT INTO vacancies (employer_id, title, city, salary_from, salary_to, requirement)
-            VALUES (%s, %s, %s, %s, %s, %s)""",
+            INSERT INTO vacancies (employer_id, title, city, salary_from, salary_to, url, requirement)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)""",
                         (vac['employer']['id'], vac['name'], vac['area']['name'], salary_from,
-                            salary_to, vac['snippet']['requirement'])
+                            salary_to, vac['url'], vac['snippet']['requirement'])
                         )
 
     conn.commit()
